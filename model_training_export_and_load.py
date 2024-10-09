@@ -91,7 +91,7 @@ def load_predict_and_assert() -> None:
                 predictions.append(prediction_saved_model)
             elif method == "keras_tfsm":
                 tfsm_model = load_model(
-                    "stored_model_by_saved_model", method="keras", as_tfsm_layer=True
+                    "stored_model_by_keras", method="keras", as_tfsm_layer=True
                 )
                 prediction_keras_model_tfsm = tfsm_model(random_input)[
                     "dense_1"
@@ -103,7 +103,7 @@ def load_predict_and_assert() -> None:
                 predictions.append(prediction_keras_model_tfsm)
             else:
                 keras_model = load_model(
-                    "stored_model_by_saved_model", method="keras", as_tfsm_layer=False
+                    "stored_model_by_keras", method="keras", as_tfsm_layer=False
                 )
                 prediction_keras_model_direct = keras_model.predict(
                     random_input
