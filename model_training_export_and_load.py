@@ -43,11 +43,20 @@ def export_model(
         raise ValueError("Unknown export method specified.")
 
 
-def load_model(export_dir: str, method: Literal["saved_model", "keras"]):
+def load_model(
+    export_dir: str,
+    method: Literal["saved_model", "keras"],
+    as_tfsm_layer: bool = False,
+):
     if method == "saved_model":
         return tf.saved_model.load(export_dir)
     elif method == "keras":
-        return tf.keras.models.load_model(export_dir)
+        if as_tfsm_layer:
+            return tf.keras.layers.TFSMLayer(
+                export_dir, call_endpoint="serving_default"
+            )
+        else:
+            return tf.keras.models.load_model(export_dir, compile=False)
     else:
         raise ValueError("Unknown load method specified.")
 
@@ -62,13 +71,23 @@ def create_compile_fit_save_model() -> None:
 
 
 def load_predict_and_assert() -> None:
-    models = {"saved_model": None, "keras": None}
+    models = {"saved_model_default": None, "keras_tfsm": None, "keras": None}
 
-    for method in models.keys():
+    for method in ["saved_model_default", "keras_tfsm", "keras"]:
         try:
-            models[method] = load_model(f"stored_model_by_{method}", method=method)
+            if method == "saved_model_default":
+                models[method] = load_model(
+                    "stored_model_by_saved_model", method="saved_model"
+                )
+            elif method == "keras_tfsm":
+                models[method] = load_model(
+                    "stored_model_by_saved_model", method="keras", as_tfsm_layer=True
+                )
+            else:
+                models[method] = load_model("stored_model_by_keras", method="keras")
         except Exception as e:
             print(f"Failed to load {method} model: {e}")
+
     if all(models.values()):
         random_input = np.random.random((1, 10)).astype(np.float32)
         predictions = {
