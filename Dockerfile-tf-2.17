@@ -1,0 +1,7 @@
+FROM tensorflow/tensorflow:2.17.0
+
+WORKDIR /app
+
+COPY model_training_export_and_load.py .
+
+CMD ["python", "-c", "import model_training_export_and_load; model_training_export_and_load.load_predict_and_assert()"]
