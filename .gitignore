@@ -129,6 +129,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+venv_*
 
 # Spyder project settings
 .spyderproject
@@ -164,3 +165,6 @@ cython_debug/
 # Locally stored models
 stored_model_by_keras
 stored_model_by_saved_model
+
+# VSCODE
+.vscode

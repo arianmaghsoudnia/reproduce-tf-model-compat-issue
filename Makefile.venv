@@ -1,0 +1,25 @@
+TF_29_VENV = venv_tf_2_9
+TF_217_VENV = venv_tf_2_17
+
+venv_setup_2_9:
+	python3.8 -m venv $(TF_29_VENV)
+	. $(TF_29_VENV)/bin/activate && pip install -r requirements_tf_2_9.txt
+
+venv_setup_2_17:
+	python3.11 -m venv $(TF_217_VENV)
+	. $(TF_217_VENV)/bin/activate && pip install -r requirements_tf_2_17.txt
+
+create_and_train_model_tf_2_9:
+	@echo "Creating, training, and saving the model using TF 2.9..."
+	. $(TF_29_VENV)/bin/activate && python -c "import model_training_export_and_load; model_training_export_and_load.create_compile_fit_save_model()"
+
+load_and_infer_model_tf_2_17:
+	@echo "Loading the model and performing inference using TF 2.17..."
+	. $(TF_217_VENV)/bin/activate && python -c "import model_training_export_and_load; model_training_export_and_load.load_predict_and_assert()"
+
+run_all: venv_setup_2_9 venv_setup_2_17 create_and_train_model_tf_2_9 load_and_infer_model_tf_2_17
+
+clean:
+	rm -rf $(TF_29_VENV) $(TF_217_VENV)
+
+.PHONY: venv_setup_2_9 venv_setup_2_17 create_and_train_model_tf_2_9 load_and_infer_model_tf_2_17 run_all clean
